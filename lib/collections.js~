@@ -1,0 +1,172 @@
+
+
+Playlists = new orion.collection('playlists', {
+  singularName: 'playlist',
+  pluralName: 'playlists',
+  link: {
+    title: 'Ambiances'
+  },
+  tabular: {
+    columns: [
+      {data: 'intensity', title: 'Intensité', width: '15%'},
+      {data: 'prettyname', title: 'Titre'},
+      {data: 'path', title:'Container',width: '25%'}
+    ]
+  }
+});
+
+Clients = new orion.collection('clients', {
+  singularName: 'client',
+  pluralName: 'clients',
+  link: {
+    title: 'Clients/Boxes'
+  },
+  tabular: {
+    columns: [
+      {data: '_id', title: 'ID', width: '15%'},
+      {data: 'name', title: 'Nom'},
+    ]
+  }
+});
+
+Ambienticons = new orion.collection('ambienticons', {
+  singularName: 'ambienticon',
+  pluralName: 'ambienticons',
+  link: {
+    title: 'Icônes'
+  },
+  tabular: {
+    columns: [
+      {data: '_id', title: 'Icônes', width: '20%'},
+      {data: 'name', title: 'Nom'},
+    ]
+  }
+});
+
+Reports = new orion.collection('reports', {
+  singularName: 'report',
+  pluralName: 'reports',
+  link: {
+    title: 'Stats de Lecture'
+  },
+  tabular: {
+    columns: [
+      {data: 'clientid', title: 'ID Client', width: '15%'},
+      {data: 'playlist', title: 'Playlist'},
+      {data: 'createdAt', title: 'Date et Heure', width: '20%'}
+    ]
+  }
+});
+
+Boxgroups = new orion.collection('boxgroups', {
+  singularName: 'boxgroup',
+  pluralName: 'boxgroups',
+  link: {
+    title: 'Multizones'
+  },
+  tabular: {
+    columns: [
+      {data: 'name', title: 'Nom du Groupe'},
+      {data: 'members', title: 'Boxes membres du Groupe'}
+    ]
+  }
+});
+
+Ambienticons.attachSchema(new SimpleSchema({
+  _id: {
+    type: String,
+    label: "Code icône"
+  },
+  name: {
+    type: String,
+    label: "Nom courant"
+  }
+}));
+
+Playlists.attachSchema(new SimpleSchema({
+  thematique: {
+    type: Boolean,
+    label: "Est une ambiance thématique"
+  },
+  prettyname: {
+    type: String,
+    label: "Titre"
+  }, 
+  path: {
+    type: String,
+    label: "Container"
+  },
+  clients: orion.attribute('hasMany', {
+    label: 'Clients autorisés',
+    optional: true
+  }, {
+    collection: Clients,
+    titleField: 'name',
+    publicationName: 'playlistClients',
+  }),
+  order: {
+    type: Number,
+    label: "Ordre"
+  },
+  intensity: {
+    type: String,
+    optional: false,
+    label: "Intensité",
+    allowedValues: ['0', '1', '2', '3', '4', '5']
+  },
+  description: {
+    type: String,
+    optional: true,
+    label: "Description",
+    autoform: {
+      afFieldInput: {
+        type: "textarea"
+      }
+    }
+  },
+  ambienticons: orion.attribute('hasMany', {
+    label: 'Icônes',
+    optional: true,
+  }, {
+    collection: Ambienticons,
+    titleField: 'name',
+    publicationName: 'playlistAmbienticons',
+  }),
+  styles: {
+    type: String,
+    optional: true,
+    label: "Styles"
+  },
+  
+}));
+
+
+
+
+
+
+Clients.attachSchema(new SimpleSchema({
+  name: {
+    type: String,
+    label: "Nom du Client"
+  }, 
+  _id: {
+    type: String,
+    label: "ID Client"
+  },
+  accesthemathiques: {
+    type: Boolean,
+    label: "Le client a accès aux thématiques"
+  },
+  playlists: orion.attribute('hasMany', {
+    label: 'Ambiances Personnalisées',
+    optional: true
+  }, {
+    collection: Playlists,
+    titleField: 'prettyname',
+    publicationName: 'clientPlaylists',
+  })
+}));
+
+Options.set('showDashboard', true);
+
